@@ -73,7 +73,7 @@ public class AdministratorController {
 			,BindingResult result
 		) {
 		if(result.hasErrors()) {
-			return "insert";
+			return "administrator/insert";
 		}
 //		if() 
 	
