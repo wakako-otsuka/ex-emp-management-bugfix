@@ -75,7 +75,7 @@ public class AdministratorController {
 		if(result.hasErrors()) {
 			return "administrator/insert";
 		}
-//		if() 
+	   
 	
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
