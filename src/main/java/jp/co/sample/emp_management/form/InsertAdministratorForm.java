@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 public class InsertAdministratorForm {
 	/** 名前 */
 	@NotBlank(message="名前は必須です")
+	
 	private String name;
 	
 	/** メールアドレス */

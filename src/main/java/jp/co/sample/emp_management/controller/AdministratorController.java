@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jp.co.sample.emp_management.domain.Administrator;
 import jp.co.sample.emp_management.form.InsertAdministratorForm;
 import jp.co.sample.emp_management.form.LoginForm;
+import jp.co.sample.emp_management.repository.AdministratorRepository;
 import jp.co.sample.emp_management.service.AdministratorService;
 
 /**
@@ -28,7 +29,10 @@ public class AdministratorController {
 
 	@Autowired
 	private AdministratorService administratorService;
-	
+
+	@Autowired
+	private AdministratorRepository administratorRepository;
+
 	@Autowired
 	private HttpSession session;
 
@@ -41,8 +45,8 @@ public class AdministratorController {
 	public InsertAdministratorForm setUpInsertAdministratorForm() {
 		return new InsertAdministratorForm();
 	}
-	
-	//  (SpringSecurityに任せるためコメントアウトしました)
+
+	// (SpringSecurityに任せるためコメントアウトしました)
 	@ModelAttribute
 	public LoginForm setUpLoginForm() {
 		return new LoginForm();
@@ -64,27 +68,42 @@ public class AdministratorController {
 	/**
 	 * 管理者情報を登録します.
 	 * 
-	 * @param form
-	 *            管理者情報用フォーム
+	 * @param form 管理者情報用フォーム
 	 * @return ログイン画面へリダイレクト
 	 */
 	@RequestMapping("/insert")
-	public String insert(@Validated InsertAdministratorForm form
-			,BindingResult result
-		) {
-		if(result.hasErrors()) {
+	public String insert(@Validated InsertAdministratorForm form, BindingResult result) {
+		if (result.hasErrors()) {
 			return "administrator/insert";
 		}
-	   
-	
-		Administrator administrator = new Administrator();
-		// フォームからドメインにプロパティ値をコピー
-		BeanUtils.copyProperties(form, administrator);
-		administratorService.insert(administrator);
-		return "redirect:/";
-	}
 
+		// serviceクラスにメールアドレスからユーザ情報を取得するメソッドを作成してそれを呼び出す.
+		// リポジトリーにあるfindByMailAddressメソッド」をつかって管理者情報を」取得する
+		// 戻り値 administratorオブジェクト。存在しない場合はnullが返ってくるようにする
+
+		// 戻り値がnullならそのメールアドレスは使われていないので、insert処理に進む
+		// administratorオッジェクトが返ってきたら、すでに使われているので
+		// エラーメッセージをセットして、入力画面にフォワードする
+
+		Administrator aaa = administratorRepository.findByMailAddress(form.getMailAddress());
+
+		if (aaa == null) {
+
+			Administrator administrator = new Administrator();
+			// フォームからドメインにプロパティ値をコピー
+			BeanUtils.copyProperties(form, administrator);
+
+			administratorService.insert(administrator);
+			return "redirect:/";
+
+		} else {
+			result.rejectValue("mailAddress", null, "すでに登録されています");
+			return "administrator/insert";
+		}
+
+	}
 	/////////////////////////////////////////////////////
+
 	// ユースケース：ログインをする
 	/////////////////////////////////////////////////////
 	/**
@@ -100,10 +119,8 @@ public class AdministratorController {
 	/**
 	 * ログインします.
 	 * 
-	 * @param form
-	 *            管理者情報用フォーム
-	 * @param result
-	 *            エラー情報格納用オブッジェクト
+	 * @param form   管理者情報用フォーム
+	 * @param result エラー情報格納用オブッジェクト
 	 * @return ログイン後の従業員一覧画面
 	 */
 	@RequestMapping("/login")
@@ -115,7 +132,7 @@ public class AdministratorController {
 		}
 		return "forward:/employee/showList";
 	}
-	
+
 	/////////////////////////////////////////////////////
 	// ユースケース：ログアウトをする
 	/////////////////////////////////////////////////////
@@ -129,5 +146,5 @@ public class AdministratorController {
 		session.invalidate();
 		return "redirect:/";
 	}
-	
+
 }

@@ -63,6 +63,8 @@ public class AdministratorRepository {
 		String sql = "insert into administrators(name,mail_address,password)values(:name,:mailAddress,:password);";
 		template.update(sql, param);
 	}
+	
+	
 
 	/**
 	 * メールアドレスから管理者情報を取得します.
