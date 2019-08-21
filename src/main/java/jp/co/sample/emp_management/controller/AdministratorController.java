@@ -73,9 +73,9 @@ public class AdministratorController {
 	 */
 	@RequestMapping("/insert")
 	public String insert(@Validated InsertAdministratorForm form, BindingResult result) {
-		if (result.hasErrors()) {
-			return "administrator/insert";
-		}
+//		if (result.hasErrors()) {
+//			return "administrator/insert";
+//		}
 
 		// serviceクラスにメールアドレスからユーザ情報を取得するメソッドを作成してそれを呼び出す.
 		// リポジトリーにあるfindByMailAddressメソッド」をつかって管理者情報を」取得する
@@ -85,9 +85,9 @@ public class AdministratorController {
 		// administratorオッジェクトが返ってきたら、すでに使われているので
 		// エラーメッセージをセットして、入力画面にフォワードする
 
-		Administrator mail = administratorRepository.findByMailAddress(form.getMailAddress());
+		Administrator existAdministrator = administratorRepository.findByMailAddress(form.getMailAddress());
 
-		if (mail!= null) {
+		if (existAdministrator!= null) {
 			result.rejectValue("mailAddress", null, "すでに登録されています");
 		}
 
