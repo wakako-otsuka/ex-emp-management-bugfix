@@ -1,5 +1,7 @@
 package jp.co.sample.emp_management.repository;
 
+
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,14 @@ import jp.co.sample.emp_management.domain.Employee;
  * 
  * @author igamasayuki
  * 
+ */
+/**
+ * @author kyoul
+ *
+ */
+/**
+ * @author kyoul
+ *
  */
 @Repository
 public class EmployeeRepository {
@@ -82,5 +92,21 @@ public class EmployeeRepository {
 
 		String updateSql = "UPDATE employees SET dependents_count=:dependentsCount WHERE id=:id";
 		template.update(updateSql, param);
+	}
+
+	/**
+	 * 名前で曖昧検索をします.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public List<Employee> research(String name) {
+		String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count FROM employees WHERE name like :name;";
+
+		SqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+
+		List<Employee> development = template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+
+		return development;
 	}
 }

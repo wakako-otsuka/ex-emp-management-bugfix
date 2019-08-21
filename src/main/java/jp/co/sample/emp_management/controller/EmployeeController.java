@@ -48,13 +48,18 @@ public class EmployeeController {
 	 */
 	@RequestMapping("/showList")
 	public String showList(Model model) {
-		
-		
 		List<Employee> employeeList = employeeService.showList();
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
-
+	
+	@RequestMapping("/result")
+    public String result(String name,Model model) {
+		List<Employee> employeeList= employeeService.result(name);
+		model.addAttribute("employeeList",employeeList);
+		return "employee/list";
+		
+	}
 	
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を表示する

@@ -53,7 +53,12 @@
 		<!-- パンくずリスト -->
 		
 		<ol class="breadcrumb">
-			<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員リスト</a></li>
+			<li class="active"><a href="list.html" th:href="@{/employee/showList}">従業員リスト:</a></li>
+			<li><form th:action="@{employee/result}" method="post">
+			<label for="name">従業員検索:</label>
+			<input id="name" type="text" name="name" placeholder="名前の入力"> 
+			</form></li>	
+					
 			
 		</ol>
 		
