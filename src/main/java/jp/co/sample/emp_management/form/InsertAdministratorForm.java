@@ -21,6 +21,17 @@ public class InsertAdministratorForm {
 	@NotBlank(message="パスワードは必須です")
 	/** パスワード */
 	private String password;
+	
+	@NotBlank(message="確認用パスワードは必須です")
+	/**確認用パスワード*/
+	private String repassword;
+	
+	public String getRepassword() {
+		return repassword;
+	}
+	public void setRepassword(String repassword) {
+		this.repassword = repassword;
+	}
 	public String getName() {
 		return name;
 	}

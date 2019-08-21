@@ -85,23 +85,30 @@ public class AdministratorController {
 		// administratorオッジェクトが返ってきたら、すでに使われているので
 		// エラーメッセージをセットして、入力画面にフォワードする
 
-		Administrator aaa = administratorRepository.findByMailAddress(form.getMailAddress());
+		Administrator mail = administratorRepository.findByMailAddress(form.getMailAddress());
 
-		if (aaa == null) {
-
-			Administrator administrator = new Administrator();
-			// フォームからドメインにプロパティ値をコピー
-			BeanUtils.copyProperties(form, administrator);
-
-			administratorService.insert(administrator);
-			return "redirect:/";
-
-		} else {
+		if (mail!= null) {
 			result.rejectValue("mailAddress", null, "すでに登録されています");
+		}
+
+		if (!form.getPassword().equals(form.getRepassword())) {
+			result.rejectValue("repassword", null, "パスワードが不一致です");
+		}
+
+		if (result.hasErrors()) {
 			return "administrator/insert";
 		}
 
+		Administrator administrator = new Administrator();
+		// フォームからドメインにプロパティ値をコピー
+		BeanUtils.copyProperties(form, administrator);
+
+		administratorService.insert(administrator);
+
+		return "redirect:/";
+
 	}
+
 	/////////////////////////////////////////////////////
 
 	// ユースケース：ログインをする
